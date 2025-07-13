@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 발전 5단계 - 건설분야 중심</title>
+    <style>
+        body {
+            font-family: '맑은 고딕', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.3em;
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+        .current-level {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .stages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .stage {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: slideInUp 0.8s ease forwards;
+        }
+        .stage:nth-child(1) { animation-delay: 0.1s; }
+        .stage:nth-child(2) { animation-delay: 0.2s; }
+        .stage:nth-child(3) { animation-delay: 0.3s; }
+        .stage:nth-child(4) { animation-delay: 0.4s; }
+        .stage:nth-child(5) { animation-delay: 0.5s; }
+        .stage:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .stage-header {
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .stage-1 .stage-header { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .stage-2 .stage-header { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .stage-3 .stage-header { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .stage-4 .stage-header { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .stage-5 .stage-header { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .current-stage .stage-header {
+            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+            position: relative;
+        }
+        .current-stage .stage-header::after {
+            content: "현재 단계";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #fff;
+            color: #27ae60;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stage-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+        .stage-title {
+            flex: 1;
+        }
+        .stage-title h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .stage-title p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+        .stage-content {
+            padding: 30px;
+        }
+        .stage-description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+        .stage-description h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        .stage-description p {
+            margin: 0;
+            line-height: 1.6;
+            color: #555;
+        }
+        .example-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .example-section h4 {
+            margin: 0 0 15px 0;
+            color: #856404;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .prompt-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #3498db;
+        }
+        .prompt-label {
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .ai-response {
+            background: #e8f6f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .ai-response-label {
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .capability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .capability-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .capability-item h5 {
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+        }
+        .capability-item p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .timeline-indicator {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .timeline-line {
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c);
+            border-radius: 2px;
+            margin: 10px 0;
+            position: relative;
+        }
+        .timeline-marker {
+            position: absolute;
+            top: -6px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border: 3px solid #27ae60;
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .impact-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .impact-box h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        .impact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .impact-list li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        .impact-list li:before {
+            content: "🚀";
+            position: absolute;
+            left: 0;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .stage-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .capability-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI 발전 5단계</h1>
+            <p>건설분야 중심으로 본 인공지능 진화 과정</p>
+            <div class="current-level">⚡ 현재 우리는 3단계 초중반 (AI 에이전트 시대) 진입</div>
+            
+            <div class="timeline-indicator">
+                <div class="timeline-line">
+                    <div class="timeline-marker"></div>
+                </div>
+                <p style="color: white; margin: 5px 0;">과거 ← → 미래</p>
+            </div>
+        </div>
+
+        <div class="stages-container">
+            <!-- 1단계: AI 챗봇 -->
+            <div class="stage stage-1">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <div class="stage-title">
+                        <h2>AI 챗봇 (단순 질의응답)</h2>
+                        <p>학습된 데이터 기반 확률적 답변 생성</p>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        <h3>📚 단계 설명</h3>
+                        <p>현재 우리가 가장 흔하게 접하는 단계입니다. 학습된 방대한 데이터를 기반으로 사용자의 질문에 가장 확률 높은 답변을 생성합니다. Kommunicate의 분석(2025)에 따르면, 이 단계의 챗봇은 NLP(자연어 처리) 기술의 발전으로 점점 더 정교해지고 있습니다.</p>
+                    </div>
+
+                    <div class="example-section">
+                        <h4>🏗️ 건설분야 실제 예시</h4>
+                        <div class="prompt-box">
+                            <div class="prompt-label">📝 프롬프트:</div>
+                            "여름철 폭염(33°C 이상) 상황에서 교량 상판 콘크리트 타설 시 유의사항과 구체적인 습윤 양생 방법을 단계별로 알려줘."
+                        </div>
+                        <div class="ai-response">
+                            <div class="ai-response-label">🤖 AI 답변 예측:</div>
+                            AI는 Nature 지에 게재된 연구(2025)와 같은 학술 자료 및 시공 기준을 바탕으로, ① 타설 전 거푸집 및 철근 온도 저감 조치, ② 저발열 시멘트 사용 검토, ③ 타설 시간대(야간/새벽) 조정, ④ 타설 후 즉각적인 비닐 시트 양생 및 살수 방법, ⑤ 양생 기간 동안의 온도 및 습도 관리 기준 등을 구체적으로 제시할 것입니다.
+                        </div>
+                    </div>
+
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <h5>현장 즉시 질의응답</h5>
+                            <p>안전수칙, 시공기준 등 즉석 검색</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>기본 계산 보조</h5>
+                            <p>단순 구조계산 및 물량 산출</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>규정 및 기준 검색</h5>
+                            <p>건축법, KBC 등 관련 법규 안내</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>도면 해석 도움</h5>
+                            <p>기본적인 도면 읽기 및 설명</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2단계: 추론 -->
+            <div class="stage stage-2">
+                <div class="stage-header">
+                    <div class="stage-number">2</div>
+                    <div class="stage-title">
+                        <h2>추론 (Reasoning)</h2>
+                        <p>논리적 관계 파악 및 새로운 결론 도출</p>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        <h3>🧠 단계 설명</h3>
+                        <p>단순 정보 나열을 넘어, 여러 데이터를 종합하고 논리적 관계를 파악하여 새로운 결론을 도출하는 단계입니다. Zapier(2025)는 일반 LLM과 OpenAI의 o3, DeepSeek R1과 같은 추론 모델의 차이를 강조합니다. 추론 모델은 패턴 인식을 넘어 논리적 프로세스를 시뮬레이션하여 복잡한 문제를 해결합니다.</p>
+                    </div>
+
+                    <div class="example-section">
+                        <h4>🏗️ 건설분야 실제 예시</h4>
+                        <div class="prompt-box">
+                            <div class="prompt-label">📝 프롬프트:</div>
+                            "A현장의 토질 데이터(N값, 점착력 등), 설계 하중(1,500kN/본), 주변 소음/진동 민원 가능성, 공사 기간 및 예산 제약 조건을 입력할 테니, 가장 경제적이고 안정적인 기초 파일 공법 3가지(PHC, 강관, 현장타설)를 장단점, 예상 공사비, 공기 측면에서 비교 분석하고 최적안을 추천해줘."
+                        </div>
+                    </div>
+
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <h5>종합적 구조 해석</h5>
+                            <p>다양한 변수를 고려한 최적 설계</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>위험도 분석</h5>
+                            <p>안전성 평가 및 위험 요소 예측</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>경제성 비교 분석</h5>
+                            <p>LCC 기반 최적 공법 선정</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>복합 문제 해결</h5>
+                            <p>다중 제약조건 하의 최적해 도출</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3단계: 에이전트 (현재 단계) -->
+            <div class="stage stage-3 current-stage">
+                <div class="stage-header">
+                    <div class="stage-number">3</div>
+                    <div class="stage-title">
+                        <h2>에이전트 (Agent)</h2>
+                        <p>자율적 계획 수립 및 과업 실행</p>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        <h3>🤖 단계 설명</h3>
+                        <p>명확한 목표를 주면 스스로 계획을 수립하고, 필요한 도구(웹 검색, 코드 실행, 파일 접근)를 사용하여 과업을 자율적으로 실행한 뒤 결과를 보고하는 단계입니다. Manus AI와 같은 도구가 이 분야를 개척하고 있습니다.</p>
+                    </div>
+
+                    <div class="example-section">
+                        <h4>🏗️ 건설분야 실제 예시</h4>
+                        <div class="prompt-box">
+                            <div class="prompt-label">📝 프롬프트:</div>
+                            "설계 변경으로 3번 교각(P3)의 위치가 X좌표 2.5m, Y좌표 1.2m 이동했어. 프로젝트 폴더에서 관련된 모든 구조 도면(CAD), 수량 산출서(Excel), 공정표(MS Project) 파일을 찾아서 변경 사항을 자동으로 반영하고, 수정된 파일 목록과 주요 변경 내용을 요약해서 구조팀장, 공무팀장에게 이메일로 보고해줘."
+                        </div>
+                    </div>
+
+                    <div class="impact-box">
+                        <h4>🚀 현재 단계의 혁신적 영향</h4>
+                        <ul class="impact-list">
+                            <li>설계부터 발주까지 전 과정 자동화</li>
+                            <li>BIM 데이터 기반 실시간 협업</li>
+                            <li>다중 업무 동시 처리 및 최적화</li>
+                            <li>인적 오류 최소화 및 품질 향상</li>
+                        </ul>
+                    </div>
+
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <h5>자동 설계 변경 관리</h5>
+                            <p>도면, 수량, 공정 일괄 업데이트</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>물량 산출 자동화</h5>
+                            <p>BIM 연동 실시간 물량 계산</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>공정 계획 최적화</h5>
+                            <p>자원 배분 및 일정 자동 조정</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>자재 조달 자동 관리</h5>
+                            <p>재고 분석 기반 자동 발주</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4단계: 혁신가 -->
+            <div class="stage stage-4">
+                <div class="stage-header">
+                    <div class="stage-number">4</div>
+                    <div class="stage-title">
+                        <h2>혁신가 (Innovator)</h2>
+                        <p>세상에 없던 새로운 해결책 창조</p>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        <h3>💡 단계 설명</h3>
+                        <p>기존 지식을 조합하는 것을 넘어, 세상에 없던 새로운 아이디어나 해결책, 과학적 원리를 창조하는 단계입니다. 이는 인류의 지식 경계를 확장하는 수준입니다.</p>
+                    </div>
+
+                    <div class="example-section">
+                        <h4>🏗️ 건설분야 실제 예시</h4>
+                        <div class="prompt-box">
+                            <div class="prompt-label">📝 프롬프트:</div>
+                            "기존 포틀랜드 시멘트 기반 콘크리트보다 탄소 배출량을 50% 이상 줄이면서, 28일 압축강도 40MPa를 만족하고 염해 저항성을 20% 향상시키는 새로운 콘크리트 배합 비율을 창조해봐. 산업 부산물(고로슬래그, 플라이애시)과 함께 사용할 수 있는 새로운 광물 혼화재나 화학 혼화제도 제안해줘."
+                        </div>
+                    </div>
+
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <h5>신소재 개발</h5>
+                            <p>친환경 고성능 건설 재료 창조</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>혁신 공법 창안</h5>
+                            <p>기존 한계를 뛰어넘는 시공법</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>구조 시스템 혁신</h5>
+                            <p>새로운 구조 원리 및 시스템</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>지속가능 솔루션</h5>
+                            <p>환경 문제 근본 해결 방안</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5단계: 조직 -->
+            <div class="stage stage-5">
+                <div class="stage-header">
+                    <div class="stage-number">5</div>
+                    <div class="stage-title">
+                        <h2>조직 (Organization)</h2>
+                        <p>다중 AI 협력을 통한 시스템 총괄 운영</p>
+                    </div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        <h3>🌐 단계 설명</h3>
+                        <p>여러 전문 AI 에이전트들이 하나의 목표를 위해 유기적으로 협력하며, 인간의 개입 없이 복잡한 시스템 전체를 자율적으로 운영하고 관리하는 단계입니다.</p>
+                    </div>
+
+                    <div class="example-section">
+                        <h4>🏗️ 건설분야 실제 예시</h4>
+                        <div class="prompt-box">
+                            <div class="prompt-label">📝 프롬프트:</div>
+                            "세종 스마트시티 건설 프로젝트를 시작한다. 교통 AI, 에너지 AI, 상하수도 AI, 통신 AI, 방재 AI 에이전트들은 서로 실시간으로 협력하여, 향후 100년 주기의 기후 변화 시나리오(폭염, 폭우, 해수면 상승)에 능동적으로 대응할 수 있는 최적의 도시 인프라 네트워크를 설계하고, 디지털 트윈 환경에서 100년간의 운영을 시뮬레이션하여 잠재적 문제점을 보고해줘."
+                        </div>
+                    </div>
+
+                    <div class="impact-box">
+                        <h4>🌟 미래 건설산업의 완전 변혁</h4>
+                        <ul class="impact-list">
+                            <li>완전 무인 건설 시스템 구현</li>
+                            <li>도시 전체 인프라 통합 관리</li>
+                            <li>100년 단위 장기 계획 및 운영</li>
+                            <li>건설산업 생태계 전면 재편</li>
+                        </ul>
+                    </div>
+
+                    <div class="capability-grid">
+                        <div class="capability-item">
+                            <h5>프로젝트 전생애 관리</h5>
+                            <p>기획부터 철거까지 완전 자동화</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>스마트시티 총괄 운영</h5>
+                            <p>도시 인프라 통합 최적화</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>예측적 유지관리</h5>
+                            <p>AI 기반 선제적 보수 계획</p>
+                        </div>
+                        <div class="capability-item">
+                            <h5>다중 AI 협업 체계</h5>
+                            <p>전문 분야별 AI 연동 시스템</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
